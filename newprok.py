@@ -78,7 +78,7 @@ class PairsTrader:
             model.update(current_spread) 
             
             # Extract the probability that a change point literally just happened (run length = 0)
-            cp_prob = model.get_probabilities()[0] 
+            cp_prob = model.rt[0] 
             cp_probabilities.append(cp_prob)
             
         # (Pad cp_probabilities with NaNs at the beginning to match your original dataframe length)
@@ -211,14 +211,31 @@ plt.xlabel("Z-Score Entry Threshold")
 plt.ylabel("Moving Average Window")
 plt.show()
 
+# 7. Out-of-Sample Blind Test (A/B Comparison)
 print("\n--- Out-of-Sample Blind Test (2021-2022) ---")
-blind_trader = PairsTrader("V", "MA", data=test_prices)
-blind_trader.calculate_signals(window=40, z_score_boundary=2.0) 
-blind_trader.cp_basic(z_score_boundary=2.0)
 
-blind_returns = blind_trader.data['strategy_return'].dropna()
-blind_sharpe = (blind_returns.mean() / blind_returns.std()) * np.sqrt(252)
-blind_total_ret = blind_trader.data['cumulative_return'].iloc[-1] - 1
+# --- METHOD A: Basic CPD ---
+trader_basic = PairsTrader("GOOGL", "JPM", data=test_prices)
+trader_basic.calculate_signals(window=40, z_score_boundary=2.0) 
+trader_basic.cp_basic(z_score_boundary=2.0)
 
-print(f"Blind Test Total Return: {blind_total_ret:.2%}")
-print(f"Blind Test Sharpe: {blind_sharpe:.2f}")
+basic_returns = trader_basic.data['strategy_return'].dropna()
+basic_sharpe = (basic_returns.mean() / basic_returns.std()) * np.sqrt(252)
+basic_total_ret = trader_basic.data['cumulative_return'].iloc[-1] - 1
+
+print("\n[Basic Moving Average CPD]")
+print(f"Total Return: {basic_total_ret:.2%}")
+print(f"Sharpe Ratio: {basic_sharpe:.2f}")
+
+# --- METHOD B: Bayesian CPD ---
+trader_bayes = PairsTrader("GOOGL", "JPM", data=test_prices)
+trader_bayes.calculate_signals(window=40, z_score_boundary=2.0) 
+trader_bayes.cp_bayes(window=40, z_score_boundary=2.0) # Triggering the Bayesian method
+
+bayes_returns = trader_bayes.data['strategy_return'].dropna()
+bayes_sharpe = (bayes_returns.mean() / bayes_returns.std()) * np.sqrt(252)
+bayes_total_ret = trader_bayes.data['cumulative_return'].iloc[-1] - 1
+
+print("\n[Bayesian Online CPD]")
+print(f"Total Return: {bayes_total_ret:.2%}")
+print(f"Sharpe Ratio: {bayes_sharpe:.2f}")

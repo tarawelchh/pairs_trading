@@ -32,7 +32,6 @@ The model was trained on historical data (2018–2019) and evaluated strictly ou
 <img width="1091" height="636" alt="image" src="https://github.com/user-attachments/assets/9b13039f-c5ff-41c3-bc41-eaa6990e1fcb" />
 
 ## Next Steps
-While the current architecture successfully proves the core statistical concepts, the next phase of development focuses on mitigating parameter decay:
-Walk-Forward Optimization: Implementing a rolling training/trading window to allow the model to dynamically update the OLS window and Z-score entry thresholds over time.
-Multi-Pair Rotation: Expanding the Walk-Forward loop to dynamically drop decoupled pairs and select new, highly cointegrated pairs if cointegration status changes over time. 
-Automatic Max Detection: Currently optimal parameters are user input based on the heatmap plot. Possibly could use Gaussian smoothing filters to remove user input while maintaining stability of parameters. 
+* Walk-Forward Optimization: Implementing a rolling training/trading window to allow the model to dynamically update the OLS window and Z-score entry thresholds over time.
+* Multi-Pair Rotation: Expanding the Walk-Forward loop to dynamically drop decoupled pairs and select new, highly cointegrated pairs if cointegration status changes over time. 
+* Automatic Max Detection: Currently optimal parameters are user input based on the heatmap plot. Possibly could use Gaussian smoothing filters to remove user input while maintaining stability of parameters. 

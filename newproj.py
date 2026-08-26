@@ -16,7 +16,7 @@ end = "2023-01-01"
 split_date = "2019-12-31"
 data = yf.download(tickers, start=start, end=end)['Close'] 
 data = data.dropna()
-transaction_cost = 0.005
+transaction_cost = 0.0005
 
 training_data = data.loc[:split_date]
 trading_data = data.loc[split_date:].copy()
